@@ -256,9 +256,20 @@ export default function FeedbackBooth() {
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
       className="flex flex-col items-center justify-center text-center space-y-8 px-4"
     >
+      {/* Logo */}
+      <img
+        src="/tie-logo.jpg"
+        alt="TiE Bangalore Mentoring Platform"
+        className="w-64 md:w-80 object-contain"
+      />
+
       <div className="space-y-4">
         <h1 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Help us improve the mentoring platform.
+          Help us improve the{' '}
+          <span className="font-extrabold text-red-400 uppercase tracking-wide">
+            Mentoring Platform
+          </span>
+          .
         </h1>
         <p className="text-xl text-slate-500 dark:text-slate-400">Takes less than 30 seconds.</p>
       </div>
@@ -271,6 +282,7 @@ export default function FeedbackBooth() {
       </Button>
     </motion.div>
   );
+
 
   const renderRole = () => (
     <motion.div
