@@ -51,7 +51,7 @@ export default function FeedbackBooth() {
   // Form State
   const [role, setRole] = useState('');
   const [easeRating, setEaseRating] = useState('');
-  const [struggleArea, setStruggleArea] = useState('');
+  const [struggleAreas, setStruggleAreas] = useState<string[]>([]);
 
   // Audio State
   const [isRecording, setIsRecording] = useState(false);
@@ -111,7 +111,7 @@ export default function FeedbackBooth() {
     setStep('welcome');
     setRole('');
     setEaseRating('');
-    setStruggleArea('');
+    setStruggleAreas([]);
     setAudioBlob(null);
     setAudioUrl(null);
     setTranscript('');
@@ -119,6 +119,12 @@ export default function FeedbackBooth() {
     setShowTyping(false);
     setRecordingTime(30);
     setError(null);
+  };
+
+  const toggleStruggle = (s: string) => {
+    setStruggleAreas(prev =>
+      prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]
+    );
   };
 
   const startRecording = async () => {
@@ -229,7 +235,7 @@ export default function FeedbackBooth() {
         .insert([{
           role,
           ease_rating: easeRating,
-          struggle_area: struggleArea,
+          struggle_area: struggleAreas.join(', ') || 'None selected',
           transcript: finalTranscript,
           audio_url: uploadedAudioUrl,
           duration_seconds: skip ? 0 : durationSeconds,
@@ -336,19 +342,39 @@ export default function FeedbackBooth() {
       initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }}
       className="w-full max-w-4xl space-y-8 px-4"
     >
-      <h2 className="text-4xl font-bold text-center text-slate-900 dark:text-white">Where did you struggle most?</h2>
-      <div className="flex flex-wrap justify-center gap-4">
-        {struggles.map((s) => (
-          <Button
-            key={s}
-            variant="outline"
-            size="lg"
-            className="text-lg px-6 py-5 rounded-full border-2 hover:bg-blue-50 hover:border-blue-400 dark:hover:bg-slate-800 transition-all"
-            onClick={() => { setStruggleArea(s); setStep('voice'); }}
-          >
-            {s}
-          </Button>
-        ))}
+      <div className="text-center space-y-2">
+        <h2 className="text-4xl font-bold text-slate-900 dark:text-white">Where did you struggle most?</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-base">Select all that apply.</p>
+      </div>
+      <div className="flex flex-wrap justify-center gap-3">
+        {struggles.map((s) => {
+          const selected = struggleAreas.includes(s);
+          return (
+            <button
+              key={s}
+              onClick={() => toggleStruggle(s)}
+              className={`px-5 py-3 rounded-full border-2 text-base font-medium transition-all select-none
+                ${ selected
+                  ? 'bg-blue-600 border-blue-600 text-white shadow-md scale-105'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800'
+                }`}
+            >
+              {selected && <span className="mr-1.5">✓</span>}{s}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-center pt-2">
+        <Button
+          size="lg"
+          disabled={struggleAreas.length === 0}
+          onClick={() => setStep('voice')}
+          className="px-12 py-6 text-xl rounded-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40 transition-all"
+        >
+          Continue{struggleAreas.length > 0 && ` (${struggleAreas.length} selected)`}
+          <ChevronRight className="ml-2 h-6 w-6" />
+        </Button>
       </div>
     </motion.div>
   );
