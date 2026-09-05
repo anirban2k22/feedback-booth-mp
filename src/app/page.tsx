@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 type Step = 'welcome' | 'role' | 'rating' | 'struggle' | 'voice' | 'success';
 
-const roles = ['Mentee', 'Mentor', 'Parent'];
+const roles = ['Mentee', 'Mentor', 'Admin'];
 
 const ratings = [
   { value: 'Very difficult', emoji: '😖' },
@@ -277,7 +277,7 @@ export default function FeedbackBooth() {
       initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }}
       className="w-full max-w-4xl space-y-8 px-4"
     >
-      <h2 className="text-4xl font-bold text-center text-slate-900 dark:text-white">Who are you?</h2>
+      <h2 className="text-4xl font-bold text-center text-slate-900 dark:text-white">What's your role?</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {roles.map((r) => (
           <Card
